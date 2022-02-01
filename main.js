@@ -65,7 +65,6 @@ program
         const child = await execa("git", ["add", "."], {
             cwd: process.cwd(),
         })
-        
         const otherChild = await execa("git", ["commit", "-m", "'Test message'"], {
             cwd: process.cwd()
         })
