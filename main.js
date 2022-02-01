@@ -7,10 +7,12 @@ import newWs from './commands/new.js';
 import open , {reset} from './commands/open.js';
 import remove from "./commands/delete.js"
 import list from "./commands/list.js"
-
+import {execa} from 'execa';
 program 
     .command("init")
     .description("Setup environment in project for workshop")
+    .option("-ng, --no-git", "do not automatically commit to git ")
+    .option("-nb, --no-branch", "do not create a new branch for a workshop")
     .action(init)
 
 program 
@@ -57,4 +59,15 @@ program
     .argument('[includes]', "filter components")
     .action(list)
 
+program 
+    .command("test")
+    .action(()=>{
+        process.stderr
+        const {stdout,stderr} = execa('git', ['add', process.cwd()])
+        console.log({ stdout})
+    })
+
 program.parse()
+
+
+

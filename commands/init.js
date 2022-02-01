@@ -2,7 +2,7 @@ import chalk from 'chalk'
 import path from 'path'
 import fs from 'fs-extra'
 
-async function init({targetDir= null}){
+async function init(options){
     const target = targetDir || path.resolve(process.cwd(), "./src")
     const current = import.meta.url 
     const template = path.resolve(new URL(current).pathname, "../../templates/workshop/")
@@ -34,6 +34,10 @@ export async function setupComponents({target}){
         console.log(`${chalk.blue.bold("/components")} folder generated`)
         return true 
     }   
+}
+
+async function handleGit(options){
+    
 }
 
 export default init 
