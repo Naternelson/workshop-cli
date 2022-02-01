@@ -62,12 +62,22 @@ program
 program 
     .command("test")
     .action(async ()=>{
-
-        let {stdout} = await execa("git", ["commit","-a" ,"-m","'Dummy file...'"], {
+        const child = await execa("git", ["add", "."], {
             cwd: process.cwd(),
-            
         })
-        console.log({stdout})
+        
+        const otherChild = await execa("git", ["commit", "-m", "'Test message'"], {
+            cwd: process.cwd()
+        })
+        console.log({child, otherChild})
+        // await new Promise(res => {
+        //     setTimeout(() =>  res(), 2000)
+        // })
+        // let thing = await execa("git", ["commit","-m","'Dummy filer...'"], {
+        //     cwd: process.cwd(),
+            
+        // })
+        // console.log({ other: thing.stdout})
     })
 
 program.parse()
