@@ -63,11 +63,11 @@ program
     .command("test")
     .action(async ()=>{
 
-        let {other} = await execa("git", ["commit","-a" ,"-m","'Dummy file...'"], {
+        let {stdout} = await execa("git", ["commit","-a" ,"-m","'Dummy file...'"], {
             cwd: process.cwd(),
             
         })
-        console.log({other})
+        console.log({stdout})
     })
 
 program.parse()
