@@ -69,15 +69,6 @@ program
         const otherChild = await execa("git", ["commit", "-m", "'Test message'"], {
             cwd: process.cwd()
         })
-        console.log({child, otherChild})
-        // await new Promise(res => {
-        //     setTimeout(() =>  res(), 2000)
-        // })
-        // let thing = await execa("git", ["commit","-m","'Dummy filer...'"], {
-        //     cwd: process.cwd(),
-            
-        // })
-        // console.log({ other: thing.stdout})
     })
 
 program.parse()
