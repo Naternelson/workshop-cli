@@ -61,10 +61,13 @@ program
 
 program 
     .command("test")
-    .action(()=>{
-        process.stderr
-        const {stdout,stderr} = execa('git', ['add', process.cwd()])
-        console.log({ stdout})
+    .action(async ()=>{
+
+        let {other} = await execa("git", ["commit","-a" ,"-m","'Dummy file...'"], {
+            cwd: process.cwd(),
+            
+        })
+        console.log({other})
     })
 
 program.parse()
