@@ -12,6 +12,10 @@
   "bin": {
     "workshop": "./main.js"
   },
+  "jest": {
+    "transform": {},
+    "verbose": true
+  },
   "author": "Nate Nelson <7nater.nelson@gmail.com>",
   "license": "ISC",
   "type": "module",

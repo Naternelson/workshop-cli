@@ -1,4 +1,4 @@
 
-export default async function init(options){
+module.exports =  async function init(options){
     
 }

@@ -1,5 +1,6 @@
-import fs from "fs-extra"
-export default class PackageHandler{
+// import fs from "fs-extra"
+const fs = require("fs-extra")
+module.exports = class PackageHandler{
     filepath=null 
     _data = {}
     constructor(filepath){
@@ -9,12 +10,12 @@ export default class PackageHandler{
         try{
             await fs.access(this.filepath)
         } catch {
-            console.error(`${filepath} is not correct or does not have access rights`)
+            console.error(`${this.filepath} is not correct or does not have access rights`)
         }
     }
     async data(){
         await this.checkpath()
-        const rawData =  await fs.readFile(filepath)
+        const rawData =  await fs.readFile(this.filepath)
         this._data = JSON.parse(rawData)
         return this._data
     }

@@ -1,4 +1,5 @@
-import init from "./init.js"
+// import init from "./init.js"
+const init = require("./init")
 describe("Initialization", () => {
     describe("package.json", () => {
         it.todo("should change package.json to include workshop")
