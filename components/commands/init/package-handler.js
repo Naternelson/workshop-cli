@@ -1,4 +1,3 @@
-// import fs from "fs-extra"
 const fs = require("fs-extra")
 module.exports = class PackageHandler{
     filepath=null 
@@ -14,10 +13,33 @@ module.exports = class PackageHandler{
         }
     }
     async data(){
-        await this.checkpath()
-        const rawData =  await fs.readFile(this.filepath)
-        this._data = JSON.parse(rawData)
-        return this._data
+        try{
+            await this.checkpath()
+            const rawData =  await fs.readFile(this.filepath)
+            this._data = JSON.parse(rawData)
+        } catch {
+            await this.new(this._filepath)
+        } finally {
+            return this._data 
+        }
+    }
+    async new(filepath){
+        
+        this.filepath = filepath ? filepath : this._filepath 
+        if(!this.filepath) return 
+        
+        const data = JSON.stringify(this._data, null, 2)
+        console.log(filepath)
+        await fs.writeFile(filepath, data)
+        return this 
+    }
+    async deleteFile(){
+        if(!this.filepath) return
+        try{
+            await fs.rm(this.filepath, {recursive: true, force: true})
+        } finally {
+            this._data = {}
+        }
     }
     async save(){
         await this.checkpath()

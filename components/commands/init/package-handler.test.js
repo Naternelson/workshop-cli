@@ -6,8 +6,16 @@ const path = require("path")
 
 describe("package-handler", ()=>{
     const pkg = new PackageHandler(path.resolve(__dirname, "./package.json"))
-    it("should create or return an object given a filepath to a json file", async ()=>{
+    beforeEach(async ()=>{
+        await pkg.new()
+    })
+    afterEach(async ()=>{
+        await pkg.deleteFile()
+    })
+
+    it("should have an undefined default setting", async ()=>{
         const data = await pkg.data()
-        expect(data.hello).toBe("world")
+        expect(data.hello).toBeUndefined()
+
     })
 })
