@@ -13,8 +13,7 @@
     "workshop": "./main.js"
   },
   "jest": {
-    "verbose": true,
-    "testMatch": ["<rootDir>/**/**"]
+    "verbose": true
   },
   "author": "Nate Nelson <7nater.nelson@gmail.com>",
   "license": "ISC",
