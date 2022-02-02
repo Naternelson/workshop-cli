@@ -1,3 +1,1 @@
-export default function component(){
-    return "Foo - Bar"
-}
+// unit file
