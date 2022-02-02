@@ -1,11 +1,14 @@
 import chalk from 'chalk'
 import path from 'path'
 import fs from 'fs-extra'
+import {execa} from 'execa'
+import { readMainPkg, writeWorkshop } from './package-helper'
 
 async function init(options){
-    const target = targetDir || path.resolve(process.cwd(), "./src")
+    const target =  path.resolve(process.cwd(), "./src")
     const current = import.meta.url 
     const template = path.resolve(new URL(current).pathname, "../../templates/workshop/")
+    await handleGitSetup(options)
     await setupComponents({target})
     await(copyWorkshop({target, template, overwrite:true},))
     
@@ -36,8 +39,10 @@ export async function setupComponents({target}){
     }   
 }
 
-async function handleGit(options){
-    
+async function handleGitSetup(options){
+    await writeWorkshopObj(options)
 }
+
+
 
 export default init 
