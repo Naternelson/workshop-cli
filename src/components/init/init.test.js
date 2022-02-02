@@ -1,8 +1,31 @@
-// import init from "./init.js"
+// ====================
+// Imports
+// ====================
 const init = require("./init")
+const PackageHandler = require("../package-handler/package-handler.js")
+const path = require("path")
+
+// ====================
+// Main description
+// ====================
 describe("Initialization", () => {
+    // ====================
+    // Lifecycle Methods
+    // ====================
+    const pkg = new PackageHandler(path.resolve(__dirname, "../../../package.json"))
+    afterEach(async()=> {
+        const data = await pkg.getData()
+        delete data.workshop 
+        pkg.data = data 
+        await pkg.save()
+    })
+
     describe("package.json", () => {
-        it.todo("should change package.json to include workshop")
+        it("should change package.json to include workshop", async () => {
+            await init()
+            const pkgData = await pkg.getData()
+            expect(pkgData).toHaveProperty("workshop")
+        })
         it.todo("workshop item should have a git and branch setting")
         it.todo("git settings should reflect options given")
     })
