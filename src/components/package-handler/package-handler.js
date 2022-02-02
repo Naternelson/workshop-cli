@@ -24,7 +24,6 @@ module.exports = class PackageHandler{
         }
     }
     async new(filepath){
-        console.log({filepath})
         this.filepath = filepath ? filepath : this.filepath 
         if(!this.filepath) return 
         const data = JSON.stringify(this.data, null, 2)

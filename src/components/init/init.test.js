@@ -12,7 +12,13 @@ describe("Initialization", () => {
     // ====================
     // Lifecycle Methods
     // ====================
-    const pkg = new PackageHandler(path.resolve(__dirname, "../../../package.json"))
+    const pkg = new PackageHandler()
+    beforeEach(()=>{
+        process.chdir(path.resolve(__dirname,"../../.."))
+        
+        pkg.filepath = path.resolve(process.cwd(), "./package.json")
+        console.log({pkg: pkg.filepath})
+    })
     afterEach(async()=> {
         const data = await pkg.getData()
         delete data.workshop 
@@ -22,7 +28,8 @@ describe("Initialization", () => {
 
     describe("package.json", () => {
         it("should change package.json to include workshop", async () => {
-            await init()
+            
+            await init({git: true, gitBranch: true})
             const pkgData = await pkg.getData()
             expect(pkgData).toHaveProperty("workshop")
         })
