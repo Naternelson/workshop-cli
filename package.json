@@ -25,7 +25,8 @@
     "execa": "^6.0.0",
     "fs-extra": "^10.0.0",
     "inquirer": "^8.2.0",
-    "jest": "^27.4.7"
+    "jest": "^27.4.7",
+    "listr": "^0.14.3"
   },
   "workshop": {
     "git": true,
