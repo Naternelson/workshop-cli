@@ -21,11 +21,12 @@ export async function setUpTestDir(){
 }
 
 export async function tearDownTestDir(){
-    const root = resolveFromUrl(import.meta.url, "../../..")
+    const root = resolveFromUrl(import.meta.url, "../../../..")
     const dir = testDir()
     try{
         await fs.access(dir)
         await fs.rm(dir, {force: true, recursive: true})
+
     } catch (err) {
         console.log("Problem with cleaning test-dir")
         console.error(err)

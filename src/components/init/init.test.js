@@ -1,21 +1,15 @@
 // ====================
 // Imports
 // ====================
-// const {init} = require("./init")
-// const PackageHandler = require("../package-handler/package-handler.js")
-// const path = require("path")
-// const fs = require("fs-extra")
-// const inquirer = require("inquirer")
-
+import {jest} from '@jest/globals'
 import {init} from "./init"
 import PackageHandler from "../package-handler/package-handler"
 import path from "path"
 import fs from "fs-extra"
-import inquirer from "inquirer"
-import { setUpTestDir, tearDownTestDir } from "../test-helper/test-helper"
-// import jest from "jest"
+import { setUpTestDir, tearDownTestDir, testDir } from "../test-helper/test-helper"
+import inquirer from 'inquirer'
 
-// jest.mock(inquirer)
+// jest.mock('inquirer')
 
 // ====================
 // Main description
@@ -30,9 +24,22 @@ describe("Initialization", () => {
     // ====================
     // lifecycle Function
     // ====================
-    const testDirPath = path.resolve(new URL(import.meta.url).pathname, "../../../test-dir")
-    beforeEach(setUpTestDir)
-    afterEach(tearDownTestDir)
+    // const testDirPath = path.resolve(new URL(import.meta.url).pathname, "../../../test-dir")
+    const testDirPath = testDir()
+    let backupI
+    beforeEach(async ()=> {
+        backupI = inquirer.prompt
+        // inquirer.prompt = (questions) => Promise.resolve({
+        //     git: true, 
+        //     gitBranch: true, 
+        //     feature: 'new-feature'
+        // })
+        await setUpTestDir()
+    })
+    afterEach(async () => {
+        inquirer.prompt = backupI
+        await tearDownTestDir()
+    })
 
     describe.only("package.json", () => {
 
@@ -53,15 +60,19 @@ describe("Initialization", () => {
         // ====================
         // Tests
         // ====================
-        it.only("should change package.json to include workshop", async () => {
-            await init({git: true, gitBranch: true})
+        it("should change package.json to include workshop", async () => {
+            inquirer.prompt = jest.fn().mockResolvedValue({        
+                git: false, 
+                gitBranch: false, 
+                feature: 'new-feature'
+            });
+            await init({})
             const pkgData = await pkg.getData()
             expect(pkgData).toHaveProperty("workshop")
         })
         it("workshop item should have a git and branch setting", async () => {
             await init({git: true, gitBranch: true})
             const pkgData = await pkg.getData()
-            console.log({pkgData})
             expect(pkgData).toHaveProperty("workshop.git")
             expect(pkgData).toHaveProperty("workshop.git-branch")
         })

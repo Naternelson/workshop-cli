@@ -11,7 +11,7 @@ import {execa as execaMain} from "execa"
 export async function initGit(options ={devBranch:true}){
     await execa("git", ["init"])
     await renameMainBranch()
-    if(options.origin) await execa("git", ["remote", "add", "origin", options.origin])
+    if(options.origin && options.origin !== "") await execa("git", ["remote", "add", "origin", options.origin])
     if(options.devBranch) await execa("git", ["checkout", "-b", "DEV"])
     await commit({push: true, message: 'Creating DEV Branch'})
     const mergeTo  = options.devBranch ? options.devBranch : "main"
@@ -85,7 +85,5 @@ async function checkGitStatus() {
 
 // Automatically set the cwd to procss.cwd()
 const execa = async (file, args, options)=> {
-    // const newArgs = arguments ? arguments : []
-    // const newOpts = options ? {...options, cwd: process.cwd()} : {}
     return await execaMain.execa(file, args, {...options, cwd: process.cwd()} )
 }

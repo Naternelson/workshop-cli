@@ -8,20 +8,13 @@ export default class PackageHandler{
     constructor(filepath){
         this.filepath = filepath
     }
-    async checkpath(){
-        try{
-            await fs.access(this.filepath)
-        } catch {
-            console.error(`${this.filepath} is not correct or does not have access rights`)
-        }
-    }
     async getData(){
         try{
-            await this.checkpath()
+            await fs.access(this.filepath)
             const rawData =  await fs.readFile(this.filepath)
             this.data = JSON.parse(rawData)
         } catch {
-            await this.new(this._filepath)
+            await this.new(this.filepath)
         } finally {
             return this.data 
         }
@@ -42,8 +35,14 @@ export default class PackageHandler{
         }
     }
     async save(){
-        await this.checkpath()
-        const data = JSON.stringify(this.data, null, 2)
-        await fs.writeFile(this.filepath, data)
+        try{
+            await fs.access(this.filepath)
+            const data = JSON.stringify(this.data, null, 2)
+            await fs.writeFile(this.filepath, data)
+        } catch {
+            await this.new(this.filepath)
+        }
+        
+        
     }
 }

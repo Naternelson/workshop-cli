@@ -71,20 +71,6 @@ async function promptMissingQuestions(options){
     return {...options, ...answers}
 }
 
-// async function askQuestions(...questions){
-//     const allowedKeys = ["type", "name", "message", "default", "choices", "validate", "filter", "pageSize", "prefix", "askAnswered", "loop"]
-//     const filterdQs = questions.reduce((newQuestions, question) => {
-//         const thisQuestion = {}
-//         for(let key in question){
-//             if(allowedKeys.includes(key))thisQuestion[key] = question[key]
-//         }
-//         newQuestions.push(thisQuestion)
-//         return newQuestions
-//     }, [])
-//     console.log({filterdQs})
-//     return  await inquirer.prompt(filterdQs)
-// }
-
 
 async function setupPackageFile(options){
     const pkg = new PackageHandler(path.resolve(process.cwd(), "./package.json"))

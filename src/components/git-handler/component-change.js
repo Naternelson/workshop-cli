@@ -1,9 +1,3 @@
-// const PackageHandler = require("../package-handler/package-handler.js")
-// const path = require("path")
-// const {commit} = require("./git-handler.js")
-// const fs = require("fs-extra")
-// const {setupDirs} = require("../init/init.js")
-
 import PackageHandler from "../package-handler/package-handler"
 import path from "path"
 import { commit } from "./git-handler"
