@@ -10,6 +10,11 @@ module.exports =  async function init(options){
     await setupPackageFile(options)
 }
 
+async function askQuestions(questions){
+    
+}
+
+
 async function setupPackageFile(options){
     const pkg = new PackageHandler(path.resolve(process.cwd(), "./package.json"))
     const data = await pkg.getData()

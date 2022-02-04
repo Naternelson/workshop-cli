@@ -5,6 +5,10 @@ const init = require("./init")
 const PackageHandler = require("../package-handler/package-handler.js")
 const path = require("path")
 const fs = require("fs-extra")
+const inquirer = require("inquirer")
+
+jest.mock(inquirer)
+
 // ====================
 // Main description
 // ====================
@@ -109,14 +113,16 @@ describe("Initialization", () => {
         })
     })
 
-    describe("setup", () => {
-        it.todo("should prompt user for information on git")
+    describe("prompts", () => {
+        it("should prompt user for information on git", () => {
+            
+        })
         it.todo("should prompt user for information on git-branches")
         it.todo("should prompt user for name of feature")
         it.todo("should prompt user for name of component")
     })
-    describe("watching", () => {
-        it.todo("should get new file event for files under tests, units and features")
-        it.todo("should create a mirroring file for files")
-    })
+    // describe("watching", () => {
+    //     it.todo("should get new file event for files under tests, units and features")
+    //     it.todo("should create a mirroring file for files")
+    // })
 })
