@@ -1,13 +1,21 @@
 // ====================
 // Imports
 // ====================
-const init = require("./init")
-const PackageHandler = require("../package-handler/package-handler.js")
-const path = require("path")
-const fs = require("fs-extra")
-const inquirer = require("inquirer")
+// const {init} = require("./init")
+// const PackageHandler = require("../package-handler/package-handler.js")
+// const path = require("path")
+// const fs = require("fs-extra")
+// const inquirer = require("inquirer")
 
-jest.mock(inquirer)
+import {init} from "./init"
+import PackageHandler from "../package-handler/package-handler"
+import path from "path"
+import fs from "fs-extra"
+import inquirer from "inquirer"
+import { setUpTestDir, tearDownTestDir } from "../test-helper/test-helper"
+// import jest from "jest"
+
+// jest.mock(inquirer)
 
 // ====================
 // Main description
@@ -22,40 +30,18 @@ describe("Initialization", () => {
     // ====================
     // lifecycle Function
     // ====================
-    const testDirPath = path.resolve(__dirname, "../../../test-dir")
-    beforeEach(async ()=>{
-        // create a test directory where files and subfolders will be created to be tested on
-        try{
-            await fs.access(testDirPath)
-        } catch {
-            await fs.mkdir(testDirPath)
-            await fs.writeFile(path.resolve(testDirPath, "./package.json"), JSON.stringify({name: "test"}))
-        } finally {
-            process.chdir(testDirPath)
-        }
-    })
-    afterEach(async ()=>{
-        // destroy the test directory and all of its files
-        const root = path.resolve(__dirname, "../../..")
-        try{
-            await fs.access(testDirPath)
-            await fs.rm(testDirPath, {force: true, recursive: true})
-        } catch (err) {
-            console.log("Problem with cleaning test-dir")
-            console.error(err)
-        } finally {
-            process.chdir(root)
-        }
-    })
+    const testDirPath = path.resolve(new URL(import.meta.url).pathname, "../../../test-dir")
+    beforeEach(setUpTestDir)
+    afterEach(tearDownTestDir)
 
-    describe("package.json", () => {
+    describe.only("package.json", () => {
 
         // ====================
         // Lifecycle Methods
         // ====================
         const pkg = new PackageHandler()
         beforeEach(()=>{
-            pkg.filepath = path.resolve(process.cwd(), "./package.json")
+            pkg.filepath = path.resolve(testDirPath, "./package.json")
         })
         afterEach(async()=> {
             const data = await pkg.getData()
@@ -67,7 +53,7 @@ describe("Initialization", () => {
         // ====================
         // Tests
         // ====================
-        it("should change package.json to include workshop", async () => {
+        it.only("should change package.json to include workshop", async () => {
             await init({git: true, gitBranch: true})
             const pkgData = await pkg.getData()
             expect(pkgData).toHaveProperty("workshop")
@@ -115,7 +101,7 @@ describe("Initialization", () => {
 
     describe("prompts", () => {
         it("should prompt user for information on git", () => {
-            
+
         })
         it.todo("should prompt user for information on git-branches")
         it.todo("should prompt user for name of feature")

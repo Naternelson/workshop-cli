@@ -1,5 +1,8 @@
-const fs = require("fs-extra")
-module.exports = class PackageHandler{
+// const fs = require("fs-extra")
+import fs from "fs-extra"
+import path from "path"
+
+export default class PackageHandler{
     filepath=null 
     data = {}
     constructor(filepath){

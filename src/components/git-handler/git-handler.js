@@ -1,4 +1,5 @@
-const execaMain = require('execa')
+// const execaMain = require('execa')
+import {execa as execaMain} from "execa"
 
 // ====================
 // Initialization of Git
@@ -43,7 +44,7 @@ export async function setUpstream(branch){
 // ====================
 // Automatically add, commit and optionally push to remote repo
 // A default message will be commited if no message is provided
-export async function commit(options ={push: true}){
+export  async function commit(options ={push: true}){
     if(await checkGitStatus() === false) return false 
     if(!options.message) {
         const branchName = await getCurrentBranch()
@@ -83,6 +84,8 @@ async function checkGitStatus() {
 }
 
 // Automatically set the cwd to procss.cwd()
-const execa = async (file, arguments =[], options ={})=> {
-    return await execaMain.execa(file, arguments, {...options, cwd: process.cwd()} )
+const execa = async (file, args, options)=> {
+    // const newArgs = arguments ? arguments : []
+    // const newOpts = options ? {...options, cwd: process.cwd()} : {}
+    return await execaMain.execa(file, args, {...options, cwd: process.cwd()} )
 }

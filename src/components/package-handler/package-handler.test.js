@@ -1,8 +1,12 @@
 // ====================
 // Imports
 // ====================
-const PackageHandler = require("./package-handler")
-const path = require("path")
+// const PackageHandler = require("./package-handler")
+// const path = require("path")
+
+import PackageHandler from "./package-handler"
+import path from "path"
+import { setUpTestDir, tearDownTestDir, testDir, resolveFromUrl } from "../test-helper/test-helper"
 
 // ====================
 // Main Description
@@ -18,11 +22,10 @@ describe("package-handler", ()=>{
     // Lifecylce functions
     // ====================
     beforeEach(async ()=>{
-        await pkg.new(path.resolve(__dirname, "./example.json"))
+        await setUpTestDir()
+        await pkg.new(path.resolve(testDir(), "./package.json"))
     })
-    afterEach(async ()=>{
-        await pkg.deleteFile()
-    })
+    afterEach(tearDownTestDir)
 
     // ====================
     // Tests

@@ -1,0 +1,13 @@
+{
+  "moduleFileExtensions": [
+    "js",
+    "mjs"
+  ],
+  "verbose": true,
+  "transform": {
+    "^.+\\.js$": "babel-jest",
+    "^.+\\.mjs$": "babel-jest"
+  },
+ 
+  "testRegex": "((\\.|/*.)(test))\\.js?$"
+}
