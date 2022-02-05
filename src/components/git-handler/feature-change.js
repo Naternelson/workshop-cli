@@ -12,16 +12,17 @@ import { setupDirs } from "../init/init"
 
 export async function featureChange(name){
     const pkg = new PackageHandler(path.resolve(process.cwd(), "./package.json"))
-    const {workbook} = await pkg.getData()
-    if(workbook.git && workbook['git-branch']) changeBranch(name)
+    const {workshop} = await pkg.getData()
+    if(workshop.git && workshop['git-branch']) changeBranch(name)
     await setupFeatureDir(name)
     await copyFeatureTest(name)
 
 }
 async function setupFeatureDir(name){
     await setupDirs()
+    const dir = path.resolve(process.cwd(), `./src/features/${name}`)
     try{
-        const dir = path.resolve(process.cwd(), `./src/features/${name}`)
+        
         await fs.access(dir)
     } catch {
         await fs.mkdir(dir)

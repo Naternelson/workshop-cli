@@ -25,9 +25,7 @@ export async function init(options){
     const tasks = new Listr([
         {
             title: "Setting up directories", 
-            task: async () => {
-                await setupDirs()
-            }
+            task: setupDirs
         },
         {
             title: "Updating package.json",
@@ -57,6 +55,7 @@ export async function init(options){
             } 
         }
     ])
+    await tasks.run()
 }
 
 async function promptMissingQuestions(options){
@@ -86,9 +85,10 @@ export  async function setupDirs(){
     const root = process.cwd()
     const mkPath = (...dir) => path.resolve(root, ...dir)
     const arr = [mkPath("./src/components"), mkPath("./src/features")]
-
-    await mkdir(mkPath("./src"))
+    const src = mkPath("./src")
+    await mkdir(src)
     await Promise.all(arr.map(async dir => {await mkdir(dir)}))
+    await fs.access(src)
 }
 
 async function mkdir(dir){

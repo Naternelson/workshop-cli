@@ -24,16 +24,15 @@ describe("Initialization", () => {
     // ====================
     // lifecycle Function
     // ====================
-    // const testDirPath = path.resolve(new URL(import.meta.url).pathname, "../../../test-dir")
     const testDirPath = testDir()
     let backupI
     beforeEach(async ()=> {
         backupI = inquirer.prompt
-        // inquirer.prompt = (questions) => Promise.resolve({
-        //     git: true, 
-        //     gitBranch: true, 
-        //     feature: 'new-feature'
-        // })
+        inquirer.prompt = jest.fn().mockResolvedValue({        
+            git: false, 
+            gitBranch: false, 
+            feature: 'new-feature'
+        })
         await setUpTestDir()
     })
     afterEach(async () => {
@@ -41,7 +40,7 @@ describe("Initialization", () => {
         await tearDownTestDir()
     })
 
-    describe.only("package.json", () => {
+    describe("package.json", () => {
 
         // ====================
         // Lifecycle Methods
@@ -50,22 +49,17 @@ describe("Initialization", () => {
         beforeEach(()=>{
             pkg.filepath = path.resolve(testDirPath, "./package.json")
         })
-        afterEach(async()=> {
-            const data = await pkg.getData()
-            delete data.workshop 
-            pkg.data = data 
-            await pkg.save()
-        })
+        // afterEach(async()=> {
+        //     const data = await pkg.getData()
+        //     delete data.workshop 
+        //     pkg.data = data 
+        //     await pkg.save()
+        // })
 
         // ====================
         // Tests
         // ====================
         it("should change package.json to include workshop", async () => {
-            inquirer.prompt = jest.fn().mockResolvedValue({        
-                git: false, 
-                gitBranch: false, 
-                feature: 'new-feature'
-            });
             await init({})
             const pkgData = await pkg.getData()
             expect(pkgData).toHaveProperty("workshop")
@@ -77,30 +71,27 @@ describe("Initialization", () => {
             expect(pkgData).toHaveProperty("workshop.git-branch")
         })
         it("git settings should reflect options given", async ()=>{
-            await init({git: true, gitBranch: false})
+            await init({})
             let pkgData = await pkg.getData()
-            expect(pkgData).toHaveProperty("workshop.git", true)
-            expect(pkgData).toHaveProperty("workshop.git-branch", false)
-
-            await init({git: false, gitBranch: true})
-            pkgData = await pkg.getData()
             expect(pkgData).toHaveProperty("workshop.git", false)
-            expect(pkgData).toHaveProperty("workshop.git-branch", true)
+            expect(pkgData).toHaveProperty("workshop.git-branch", false)
         })
     })
-    describe("template", () => {
+    describe.only("template", () => {
 
-
-        it("should setup directory folders if not present", async () => {
+        it.only("should setup directory folders if not present", async () => {
             await init(defOptions)
+            console.log("INITATION IS DONE")
             const srcDir = path.resolve(testDirPath, "./src")
             const compDir = path.resolve(testDirPath, "./src/components")
             const feaDir = path.resolve(testDirPath, "./src/features")
             async function checkDir(dir){
+                
                 try {
                     await fs.access(dir)
                     return true
-                } catch {
+                } catch (err) {
+                    console.error(err)
                     return false
                 }
             }

@@ -26,7 +26,6 @@ export async function tearDownTestDir(){
     try{
         await fs.access(dir)
         await fs.rm(dir, {force: true, recursive: true})
-
     } catch (err) {
         console.log("Problem with cleaning test-dir")
         console.error(err)

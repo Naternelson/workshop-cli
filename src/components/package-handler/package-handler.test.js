@@ -11,7 +11,7 @@ import { setUpTestDir, tearDownTestDir, testDir, resolveFromUrl } from "../test-
 // ====================
 // Main Description
 // ====================
-describe("package-handler", ()=>{
+describe.skip("package-handler", ()=>{
     
     // ====================
     // Declarations

@@ -6,9 +6,9 @@ import { setupDirs } from "../init/init"
 
 export async function componentChange(name){
     const pkg = new PackageHandler(path.resolve(process.cwd(), "./package.json"))
-    const {workbook} = await pkg.getData()
-    if(workbook.git) {
-        const options ={ push: workbook['git-branch']}
+    const {workshop} = await pkg.getData()
+    if(workshop.git) {
+        const options ={ push: workshop['git-branch']}
         await commit(options) 
     }
     await setupComponentDir(name)
