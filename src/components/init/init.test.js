@@ -37,7 +37,7 @@ describe("Initialization", () => {
     })
     afterEach(async () => {
         inquirer.prompt = backupI
-        await tearDownTestDir()
+        // await tearDownTestDir()
     })
 
     describe("package.json", () => {
@@ -49,12 +49,6 @@ describe("Initialization", () => {
         beforeEach(()=>{
             pkg.filepath = path.resolve(testDirPath, "./package.json")
         })
-        // afterEach(async()=> {
-        //     const data = await pkg.getData()
-        //     delete data.workshop 
-        //     pkg.data = data 
-        //     await pkg.save()
-        // })
 
         // ====================
         // Tests
@@ -77,11 +71,10 @@ describe("Initialization", () => {
             expect(pkgData).toHaveProperty("workshop.git-branch", false)
         })
     })
-    describe.only("template", () => {
+    describe("template", () => {
 
-        it.only("should setup directory folders if not present", async () => {
+        it("should setup directory folders if not present", async () => {
             await init(defOptions)
-            console.log("INITATION IS DONE")
             const srcDir = path.resolve(testDirPath, "./src")
             const compDir = path.resolve(testDirPath, "./src/components")
             const feaDir = path.resolve(testDirPath, "./src/features")

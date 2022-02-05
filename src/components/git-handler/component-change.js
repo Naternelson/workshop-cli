@@ -3,6 +3,7 @@ import path from "path"
 import { commit } from "./git-handler"
 import fs from "fs-extra"
 import { setupDirs } from "../init/init"
+import { resolveFromUrl } from "../test-helper/test-helper"
 
 export async function componentChange(name){
     const pkg = new PackageHandler(path.resolve(process.cwd(), "./package.json"))
@@ -29,7 +30,8 @@ async function setupComponentDir(name){
 
 async function copyComponentFiles(name){
     const target = path.resolve(process.cwd(), `./src/components/${name}`)
-    const src = path.resolve(import.meta.url, "../../../templates/component")
+    const src = resolveFromUrl(import.meta.url, "../../../../templates/component")
+    // const src = path.resolve(import.meta.url, "../../../templates/component")
     try{
         await fs.copy(src, target)
     } catch {
