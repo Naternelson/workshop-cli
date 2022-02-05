@@ -5,7 +5,7 @@ export function resolveFromUrl(metaurl, ...dirs){
 }
 
 export function testDir(){
-    return resolveFromUrl(import.meta.url, "../../../../test-dir") 
+    return resolveFromUrl(import.meta.url, "../../../../../test-dir") 
 }
 
 export async function setUpTestDir(){

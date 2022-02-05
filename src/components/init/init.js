@@ -19,8 +19,13 @@ import {initGit} from "../git-handler/git-handler"
 import {featureChange} from "../git-handler/feature-change"
 import {componentChange} from "../git-handler/component-change"
 
-export async function init(options){
-    const responses = await promptMissingQuestions(options)
+export async function init(options={}){
+    const defaultOpts = {
+        git: true, 
+        gitBranch: true,
+        feature: 'new-feature'
+    }
+    const responses = options.default ? defaultOpts : await promptMissingQuestions(options)
     await setupPackageFile(responses)
     const tasks = new Listr([
         {
@@ -32,13 +37,6 @@ export async function init(options){
             task: async () => {
                 await setupPackageFile(responses)
             }
-        },
-        {
-            title: 'Initalizing Git',
-            enabled: () => responses.git,
-            task: async () =>{
-                await initGit({...responses, devBranch: true})
-            } 
         },
         {
             title: `Setting up feature: ${responses.feature}`,
@@ -53,7 +51,14 @@ export async function init(options){
             task: async () => {
                 await componentChange(responses.component)
             } 
-        }
+        },
+        {
+            title: 'Initalizing Git',
+            enabled: () => responses.git,
+            task: async () =>{
+                await initGit({...responses, devBranch: true})
+            } 
+        },
     ])
     await tasks.run()
 }

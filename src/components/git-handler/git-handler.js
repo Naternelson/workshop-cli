@@ -8,14 +8,17 @@ import {execa as execaMain} from "execa"
 // Renames the master branch to Main
 // Creates a branch called DEV where all branch changes will merge to 
 // If an initial branch if provided, a new branch will be setup
-export async function initGit(options ={devBranch:true}){
+export async function initGit(options ={}){
+    if(options.devBranch === undefined) options.devBranch = true 
     await execa("git", ["init"])
-    await renameMainBranch()
+    await commit({push: false, message: "Initial commit"})
+    await renameMasterBranch()
     if(options.origin && options.origin !== "") await execa("git", ["remote", "add", "origin", options.origin])
     if(options.devBranch) await execa("git", ["checkout", "-b", "DEV"])
-    await commit({push: true, message: 'Creating DEV Branch'})
     const mergeTo  = options.devBranch ? options.devBranch : "main"
     if(options.branch) await changeBranch(options.branch, mergeTo)
+
+    
 }
 
 // ====================
@@ -70,7 +73,7 @@ async function getCurrentBranch(){
 }
 
 
-async function renameMainBranch(name="main"){
+async function renameMasterBranch(name="main"){
     await execa("git", ["branch", "-M", name])
 }
 
@@ -85,5 +88,5 @@ async function checkGitStatus() {
 
 // Automatically set the cwd to procss.cwd()
 const execa = async (file, args, options)=> {
-    return await execaMain.execa(file, args, {...options, cwd: process.cwd()} )
+    return await execaMain(file, args, {...options, cwd: process.cwd()} )
 }

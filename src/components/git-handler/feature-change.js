@@ -1,9 +1,3 @@
-// const PackageHandler = require("../package-handler/package-handler.js")
-// const path = require("path")
-// const {changeBranch} = require("./git-handler.js")
-// const fs = require("fs-extra")
-// const {setupDirs} = require("../init/init.js")
-
 import PackageHandler from "../package-handler/package-handler"
 import path from "path"
 import { changeBranch } from "./git-handler"
@@ -32,7 +26,6 @@ async function setupFeatureDir(name){
 async function copyFeatureTest(name){
     const target = path.resolve(process.cwd(), `./src/features/${name}`)
     const src = resolveFromUrl(import.meta.url, "../../../../templates/feature")
-    // const src = path.resolve(import.meta.url, )
     try{
         await fs.copy(src, target)
     } catch (err){

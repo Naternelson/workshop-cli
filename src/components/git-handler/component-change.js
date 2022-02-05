@@ -31,7 +31,6 @@ async function setupComponentDir(name){
 async function copyComponentFiles(name){
     const target = path.resolve(process.cwd(), `./src/components/${name}`)
     const src = resolveFromUrl(import.meta.url, "../../../../templates/component")
-    // const src = path.resolve(import.meta.url, "../../../templates/component")
     try{
         await fs.copy(src, target)
     } catch {

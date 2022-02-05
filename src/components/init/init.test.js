@@ -37,7 +37,7 @@ describe("Initialization", () => {
     })
     afterEach(async () => {
         inquirer.prompt = backupI
-        // await tearDownTestDir()
+        await tearDownTestDir()
     })
 
     describe("package.json", () => {
@@ -89,18 +89,21 @@ describe("Initialization", () => {
                 }
             }
             const arr = [srcDir, compDir, feaDir]
-            let res = await checkDir(srcDir)
-            expect(res).toBe(true)
+            let res = await Promise.all([checkDir(srcDir), checkDir(compDir), checkDir(feaDir)])
+            expect(res.every(r => !!r)).toBe(true)
         })
     })
 
-    describe("prompts", () => {
-        it("should prompt user for information on git", () => {
-
+    describe.only("actions", () => {
+        const resolveInq = obj => inquirer.prompt = jest.fn().mockResolvedValue(obj)
+        it("should init new git repo if git=true is passed", async() => {
+            resolveInq({git: true, gitBranch: true})
+            await init()
+            expect(true).toBe(true)
         })
-        it.todo("should prompt user for information on git-branches")
-        it.todo("should prompt user for name of feature")
-        it.todo("should prompt user for name of component")
+        it.todo("should update git branches if gitBranch=true is passed")
+        it.todo("should create a new feature if feature[name] is passed")
+        it.todo("should create a new component is component[name] is passed")
     })
     // describe("watching", () => {
     //     it.todo("should get new file event for files under tests, units and features")
