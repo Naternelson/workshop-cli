@@ -106,10 +106,10 @@ describe("Initialization", () => {
             })
         })
         it("should create a new feature if feature[name] is passed", async ()=>{
-            resolveInq({git: true, gitBranch: true, remote: false, feature: 'awesome-feature'})
+            resolveInq({git: true, gitBranch: true, remote: false, feature: 'awesome-feature', remote: false})
             await init()
             fs.access(path.resolve(testDirPath, "./src/features/awesome-feature"), fs.constants.R_OK, (err) => {
-                console.error({err})
+                if(err) console.error({err})
                 expect(!!err).toBe(false)
                 
             })

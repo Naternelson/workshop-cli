@@ -21,7 +21,9 @@ export async function init(options={}){
     const mainTasks = new Listr([
         {
             title: "Setting up directories", 
-            task: setupDirs
+            task: async () => {
+                await setupDirs()
+            }
         },
         {
             title: "Updating package.json",
@@ -34,7 +36,7 @@ export async function init(options={}){
             enabled: () => responses.git,
             task: async () =>{
                 await initGit({...responses, devBranch: true})
-                return secondaryTasks
+                await secondaryTasks.run()
             } 
         }, 
         {
