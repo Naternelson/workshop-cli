@@ -1,5 +1,8 @@
 // const execaMain = require('execa')
 import {execa as execaMain} from "execa"
+import PackageHandler from "../package-handler/package-handler"
+import { testDir } from "../test-helper/test-helper"
+import path from 'path'
 
 // ====================
 // Initialization of Git
@@ -17,8 +20,6 @@ export async function initGit(options ={}){
     if(options.devBranch) await execa("git", ["checkout", "-b", "DEV"])
     const mergeTo  = options.devBranch ? options.devBranch : "main"
     if(options.branch) await changeBranch(options.branch, mergeTo)
-
-    
 }
 
 // ====================
@@ -27,11 +28,15 @@ export async function initGit(options ={}){
 // Automatically commit, merge back to DEV branch, and create a new branch 
 export async function changeBranch(branch, mergeTo= 'DEV'){
     const oldBranch = await getCurrentBranch()
-    await commit({push: true, message: `Pausing branch ${oldBranch}`})
+    
+    const pkg = new PackageHandler(path.resolve(testDir(), "./package.json"))
+    const data = await pkg.getData()
+    const push = data.workshop.remote 
+    await commit({push, message: `Pausing branch ${oldBranch}`})
     await execa("git", ["checkout", mergeTo])
     await execa("git", ["merge", oldBranch])
     await execa("git", ["checkout", "-b", branch])
-    await commit({push: true, message: `Setting up new branch: ${branch}`})
+    await commit({push, message: `Setting up new branch: ${branch}`})
 }
 
 // ====================
@@ -53,11 +58,17 @@ export  async function commit(options ={push: true}){
         const branchName = await getCurrentBranch()
         options.message = `Update to ${branchName}`
     }
-    await execa("git", ["add", "."])
-    await execa("git", ["commit", "-m", options.message])
-    if(options.push){
-        await execa("git", ["push"])
+    try{
+        await execa("git", ["add", "."])
+        await execa("git", ["commit", "-m", `'${options.message}'`])
+        if(options.push){
+            await execa("git", ["push"])
+        }
+    } catch(err) {
+        // console.log({err})
+        if(!err.stdout.includes("nothing to commit")) throw err
     }
+
 
 }
 

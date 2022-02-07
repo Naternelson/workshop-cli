@@ -8,6 +8,7 @@ import { resolveFromUrl } from "../test-helper/test-helper"
 export async function featureChange(name){
     const pkg = new PackageHandler(path.resolve(process.cwd(), "./package.json"))
     const {workshop} = await pkg.getData()
+
     if(workshop.git && workshop['git-branch']) changeBranch(name)
     await setupFeatureDir(name)
     await copyFeatureTest(name)

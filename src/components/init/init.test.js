@@ -8,6 +8,7 @@ import path from "path"
 import fs from "fs-extra"
 import { setUpTestDir, tearDownTestDir, testDir } from "../test-helper/test-helper"
 import inquirer from 'inquirer'
+import { featureChange } from '../git-handler/feature-change'
 
 // jest.mock('inquirer')
 
@@ -18,6 +19,7 @@ describe("Initialization", () => {
     const defOptions = {
         git: true, 
         gitBranch: true, 
+        remote: false, 
         name: 'example-feature'
     }
 
@@ -94,15 +96,25 @@ describe("Initialization", () => {
         })
     })
 
-    describe.only("actions", () => {
+    describe("actions", () => {
         const resolveInq = obj => inquirer.prompt = jest.fn().mockResolvedValue(obj)
         it("should init new git repo if git=true is passed", async() => {
-            resolveInq({git: true, gitBranch: true})
+            resolveInq({git: true, gitBranch: true, remote: false})
             await init()
-            expect(true).toBe(true)
+            fs.access(path.resolve(testDirPath, ".git"), fs.constants.R_OK, (err) => {
+                expect(!!err).toBe(false)
+            })
         })
-        it.todo("should update git branches if gitBranch=true is passed")
-        it.todo("should create a new feature if feature[name] is passed")
+        it("should create a new feature if feature[name] is passed", async ()=>{
+            resolveInq({git: true, gitBranch: true, remote: false, feature: 'awesome-feature'})
+            await init()
+            fs.access(path.resolve(testDirPath, "./src/features/awesome-feature"), fs.constants.R_OK, (err) => {
+                console.error({err})
+                expect(!!err).toBe(false)
+                
+            })
+
+        })
         it.todo("should create a new component is component[name] is passed")
     })
     // describe("watching", () => {

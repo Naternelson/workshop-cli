@@ -1,7 +1,0 @@
-{
-  "name": "test",
-  "workshop": {
-    "git": true,
-    "git-branch": true
-  }
-}

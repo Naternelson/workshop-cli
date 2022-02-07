@@ -1,14 +1,6 @@
 // ====================
 // Imports 
 // ====================
-// const PackageHandler = require("../package-handler/package-handler.js")
-// const path = require("path")
-// const fs = require("fs-extra")
-// const inquirer = require("inquirer")
-// const Listr = require("listr")
-// const {initGit} = require("../git-handler/git-handler.js")
-// const {featureChange} = require("../git-handler/feature-change.js")
-// const {componentChange} = require("../git-handler/component-change.js")
 
 import PackageHandler from "../package-handler/package-handler"
 import path from 'path'
@@ -26,8 +18,7 @@ export async function init(options={}){
         feature: 'new-feature'
     }
     const responses = options.default ? defaultOpts : await promptMissingQuestions(options)
-    await setupPackageFile(responses)
-    const tasks = new Listr([
+    const mainTasks = new Listr([
         {
             title: "Setting up directories", 
             task: setupDirs
@@ -38,6 +29,23 @@ export async function init(options={}){
                 await setupPackageFile(responses)
             }
         },
+        {
+            title: 'Initalizing Git',
+            enabled: () => responses.git,
+            task: async () =>{
+                await initGit({...responses, devBranch: true})
+                return secondaryTasks
+            } 
+        }, 
+        {
+            title: 'Secondary Tasks',
+            enabled: () => !responses.git,
+            task: async () => {
+                await secondaryTasks.run()
+            }
+        }
+    ])
+    const secondaryTasks = new Listr([         
         {
             title: `Setting up feature: ${responses.feature}`,
             enabled: () =>  responses.feature &&  responses.feature !== "",
@@ -51,39 +59,9 @@ export async function init(options={}){
             task: async () => {
                 await componentChange(responses.component)
             } 
-        },
-        {
-            title: 'Initalizing Git',
-            enabled: () => responses.git,
-            task: async () =>{
-                await initGit({...responses, devBranch: true})
-            } 
-        },
-    ])
-    await tasks.run()
-}
-
-async function promptMissingQuestions(options){
-    const questions = []
-    const {git, gitBranch, origin, feature, component} = options
-    questions.push({name: 'git', type: 'confirm', message: "Initalize Git?", when: () =>  git !== undefined})
-    questions.push({name: 'origin', message: "What is the remote origin of this git --ignore if not applicable", when: (answers) => answers.git && origin === undefined})
-    questions.push({name: 'gitBranch', type: 'confirm', message: 'Auto setup git branches on feature change?', when: (answers) =>  answers.git && gitBranch === undefined})
-    questions.push({name: 'feature', message: 'Name of first feature', when: (answers) =>  answers.git && feature === undefined})
-    questions.push({name: 'component', message: 'Name of first component', when: (answers) =>  answers.git && component === undefined && answers.feature !== ""})
-    const answers =  await inquirer.prompt(questions)
-    return {...options, ...answers}
-}
-
-
-async function setupPackageFile(options){
-    const pkg = new PackageHandler(path.resolve(process.cwd(), "./package.json"))
-    const data = await pkg.getData()
-    const {git, gitBranch} = options
-    const workshopObj = {git, ['git-branch']: gitBranch}
-    data.workshop = data.workshop ? {...data.workshop, ...workshopObj} : workshopObj
-    pkg.data = data 
-    await pkg.save()
+        }
+    ], {concurrent: false})
+    await mainTasks.run()
 }
 
 export  async function setupDirs(){
@@ -94,6 +72,30 @@ export  async function setupDirs(){
     await mkdir(src)
     await Promise.all(arr.map(async dir => {await mkdir(dir)}))
     await fs.access(src)
+}
+
+async function promptMissingQuestions(options){
+    const {git, gitBranch, origin, feature, component} = options
+    const questions = [
+        {name: 'git', type: 'confirm', message: "Initalize Git?", when: () =>  git === undefined},
+        {name: 'remote', type: 'confirm', message: 'Auto push to remote repo?', when: (answers) => answers.git},
+        {name: 'origin', message: "What is the remote origin of this git --ignore if not applicable", when: (answers) => answers.remote && origin === undefined},
+        {name: 'gitBranch', type: 'confirm', message: 'Auto setup git branches on feature change?', when: (answers) =>  answers.git && gitBranch === undefined},
+        {name: 'feature', message: 'Name of first feature', when: (answers) =>  answers.git && feature === undefined},
+        {name: 'component', message: 'Name of first component', when: (answers) =>  answers.git && component === undefined && answers.feature !== ""}
+    ]
+    const answers =  await inquirer.prompt(questions)
+    return {...options, ...answers}
+}
+
+async function setupPackageFile(options){
+    const pkg = new PackageHandler(path.resolve(process.cwd(), "./package.json"))
+    const data = await pkg.getData()
+    const {git, gitBranch, remote} = options
+    const workshopObj = {git, ['git-branch']: gitBranch, remote: !!remote}
+    data.workshop = data.workshop ? {...data.workshop, ...workshopObj} : workshopObj
+    pkg.data = data 
+    await pkg.save()
 }
 
 async function mkdir(dir){
