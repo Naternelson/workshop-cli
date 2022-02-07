@@ -20,8 +20,9 @@ export async function componentChange(name){
 
 async function setupComponentDir(name){
     await setupDirs()
+    const dir = path.resolve(process.cwd(), `./src/components/${name}`)
     try{
-        const dir = path.resolve(process.cwd(), `./src/components/${name}`)
+        
         await fs.access(dir)
     } catch {
         await fs.mkdir(dir)

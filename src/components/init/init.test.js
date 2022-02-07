@@ -115,7 +115,17 @@ describe("Initialization", () => {
             })
 
         })
-        it.todo("should create a new component is component[name] is passed")
+        it("should create a new component is component[name] is passed" , async () => {
+            const component = "awesome-component"
+            resolveInq({git: true, gitBranch: true, remote: false, component, remote: false})
+            await init()
+            fs.access(path.resolve(testDirPath, `./src/components/${component}`), fs.constants.R_OK, (err) => {
+                if(err) console.error({err})
+                expect(!!err).toBe(false)
+                
+            })
+
+        })
     })
     // describe("watching", () => {
     //     it.todo("should get new file event for files under tests, units and features")
