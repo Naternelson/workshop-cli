@@ -8,9 +8,6 @@ import path from "path"
 import fs from "fs-extra"
 import { setUpTestDir, tearDownTestDir, testDir } from "../test-helper/test-helper"
 import inquirer from 'inquirer'
-import { featureChange } from '../git-handler/feature-change'
-
-// jest.mock('inquirer')
 
 // ====================
 // Main description
@@ -120,15 +117,9 @@ describe("Initialization", () => {
             resolveInq({git: true, gitBranch: true, remote: false, component, remote: false})
             await init()
             fs.access(path.resolve(testDirPath, `./src/components/${component}`), fs.constants.R_OK, (err) => {
-                if(err) console.error({err})
+                if(err) console.error(err)
                 expect(!!err).toBe(false)
-                
             })
-
         })
     })
-    // describe("watching", () => {
-    //     it.todo("should get new file event for files under tests, units and features")
-    //     it.todo("should create a mirroring file for files")
-    // })
 })
